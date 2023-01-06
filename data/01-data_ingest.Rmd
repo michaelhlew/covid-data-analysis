@@ -1,0 +1,8 @@
+---
+title: "01-data_ingest"
+output: html_document
+date: "`r Sys.Date()`"
+---
+
+This file will import the data. 
+
