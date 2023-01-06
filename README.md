@@ -2,6 +2,7 @@
 #### Authors: Michael Lewis, Aarushi Sahejpal, Katherine Prince 
 *Project completed for the 2023 Institute for Data Science and Big Data, American University*
 
+This project analyzes COVID-19 data for .... 
 
 Our file structure is as follows:
 - `data` contains the raw data, cleaned data, as well as the relevant ingest and cleaning scripts.
