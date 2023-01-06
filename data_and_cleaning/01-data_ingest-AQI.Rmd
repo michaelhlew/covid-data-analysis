@@ -36,7 +36,7 @@ names(AQI_2020) == names(AQI_2021)
 names(AQI_2021) == names(AQI_2022)
 ```
 
-Binding together the data frames. 
+Binding together the data frames
 ```{r}
 bind_rows(AQI_2020, AQI_2021, AQI_2022) -> combined_AQI
 ```
@@ -46,7 +46,7 @@ Cleaning up the names
 janitor::clean_names(dat = combined_AQI) -> combined_AQI
 ```
 
-Fixing the date and creating factors:
+Fixing the date and creating factors
 ```{r}
 combined_AQI <- combined_AQI %>%
   mutate(
@@ -61,7 +61,6 @@ combined_AQI <- combined_AQI %>%
 Taking a look 
 ```{r}
 head(combined_AQI)
-
 ```
 
 Export to CSV
