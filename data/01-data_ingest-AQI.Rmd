@@ -3,22 +3,22 @@ title: "01-data_ingest"
 date: "`r Sys.Date()`"
 ---
 
+This file will ingest and clean all DC Air Quality Index (AQI) for 2020-2022. The raw data was downloaded from https://www.epa.gov/outdoor-air-quality-data/air-quality-index-daily-values-report. The following selections were made:
+
+- We selected the option "all pollutants"
+- We chose the following years: 2020, 2021, 2022
+- Chose geographic area DC (District of Columbia)
+
+There were three raw data file exports (one for each year). They can be accessed in the "raw_data" folder.
+
 ```{r, include=FALSE}
 library(tidyverse)
 library(lubridate)
 library(janitor)
 ```
 
-This file will import the data. 
-
-## Air Quality Data 
-https://www.epa.gov/outdoor-air-quality-data/air-quality-index-daily-values-report
-Selections: 
-
-All pollutants / year = 2022, 2021, 2020 / DC
-
 ```{r}
-# read 2022 data
+# read in raw data
 AQI_2022 <- read_csv("raw_data/raw_2022_airquality_DC.csv", na = ".")
 AQI_2021 <- read_csv("raw_data/raw_2021_airquality_DC.csv", na = ".")
 AQI_2020 <- read_csv("raw_data/raw_2020_airquality_DC.csv", na = ".")
@@ -61,7 +61,7 @@ Taking a look
 head(combined_AQI)
 ```
 
-Export
+Export to CSV
 ```{r}
 write_csv(combined_AQI, file = "./combined_AQI_clean.csv")
 ```
