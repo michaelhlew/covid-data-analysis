@@ -1,7 +1,7 @@
-# COVID-19 Data Analysis 
-### Authors: Michael Lewis, Aarushi Sahejpal, Katherine Prince
+## COVID-19 Data Analysis
+#### Authors: Michael Lewis, Aarushi Sahejpal, Katherine Prince 
+*Project completed for the 2023 Institute for Data Science and Big Data, American University*
 
-This GitHub repository provides all the data, code, and analysis for our project analyzing COVID-19 data. 
 
 Our file structure is as follows:
 - `data` contains the raw data, cleaned data, as well as the relevant ingest and cleaning scripts.
