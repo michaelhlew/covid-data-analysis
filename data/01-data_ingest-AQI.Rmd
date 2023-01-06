@@ -48,17 +48,20 @@ janitor::clean_names(dat = combined_AQI) -> combined_AQI
 
 Fixing the date and creating factors:
 ```{r}
-combined_AQI <- combined_AQI %>% 
-  mutate(date = mdy(date), 
-         main_pollutant = as_factor(main_pollutant),
-         site_name_of_overall_aqi = as_factor(site_name_of_overall_aqi),
-         site_id_of_overall_aqi = as_factor(site_id_of_overall_aqi), 
-         source_of_overall_aqi = as_factor(source_of_overall_aqi))
+combined_AQI <- combined_AQI %>%
+  mutate(
+    date = mdy(date),
+    main_pollutant = as_factor(main_pollutant),
+    site_name_of_overall_aqi = as_factor(site_name_of_overall_aqi),
+    site_id_of_overall_aqi = as_factor(site_id_of_overall_aqi),
+    source_of_overall_aqi = as_factor(source_of_overall_aqi)
+  )
 ```
 
 Taking a look 
 ```{r}
 head(combined_AQI)
+
 ```
 
 Export to CSV
