@@ -4,5 +4,4 @@ output: html_document
 date: "`r Sys.Date()`"
 ---
 
-This file will import the data. 
-
+his file will ingest and clean DC COVID data. 
