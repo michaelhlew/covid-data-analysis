@@ -47,6 +47,6 @@ ward_analysis("Ward 7") -> ward7_model
 ward_analysis("Ward 8") -> ward8_model
 ward_analysis("Homeless") -> Homeless_model
 ward_analysis("All") -> All_model
-
+#excluding unknown
 ```
 
