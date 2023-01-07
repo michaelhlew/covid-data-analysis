@@ -4,4 +4,15 @@ output: html_document
 date: "`r Sys.Date()`"
 ---
 
-his file will ingest and clean DC COVID data. 
+This document will upload, clean, and save COVID data for Washington DC.
+
+```{r, include=FALSE}
+library(tidyverse)
+library(lubridate)
+library(janitor)
+```
+
+```{r}
+
+```
+
