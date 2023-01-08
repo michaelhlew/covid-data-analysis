@@ -158,7 +158,7 @@ dmv_covid <- dmv_covid %>%
   mutate(average_cases = mean(cases, na.rm = T),
          average_deaths = mean(deaths, na.rm = T),
          average_vaccinations_administered = mean(vaccinesAdministered, na.rm = T)) %>% 
-  select(county, average_cases, average_deaths) %>%
+  select(county, average_cases, average_deaths, average_vaccinations_administered) %>%
   unique() 
 ```
 
