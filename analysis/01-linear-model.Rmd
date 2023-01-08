@@ -1,5 +1,5 @@
 ---
-title: "Data Analysis"
+title: "Linear Model Analysis"
 author: "Michael Lewis, Aarushi Sahejpal, Katherine Prince"
 date: "`r Sys.Date()`"
 output: pdf_document
@@ -126,6 +126,10 @@ $$
 \end{aligned}
 $$
 
+```{r}
+plot(average_death.full.lm)
+plot(average_cases_reduced)
+```
 
 
 
