@@ -1,4 +1,11 @@
 
+This file will ingest and clean two datasets the American Community Survery (ACS), and COVID data. We rely on the `tidyverse` packages and  `tidycensus` to import and clean our data. For the COVID data, we call the API for `covidactnow.org` (a COVID data repository) directly. 
+
+Note: you will have to use your own API keys to run this file on your machine. We use the `keyring` package to manage our API keys. Below are the links to obtain the relevant API keys 
+-- COVID Act Now https://apidocs.covidactnow.org 
+-- Census https://api.census.gov/data/key_signup.html 
+
+
 ```{r, include=FALSE}
 library(tidyverse)
 library(janitor)
