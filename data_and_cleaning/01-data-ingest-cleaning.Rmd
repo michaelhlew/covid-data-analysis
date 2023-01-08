@@ -161,14 +161,11 @@ combined <- left_join(dmv_covid, ACS)
 glimpse(combined)
 ```
 
-```{r}
-lm(average_deaths ~ estimate_number_commuting_to_work + 
-     estimate_mean_earnings_usd + 
-     estimate_health_insurance_coverage + estimate_percent_essential_workers,
-   data = combined) -> lm1
+Exporting df to a CSV file
 
-summary(lm1)
-plot(lm1)
+```{r}
+write_csv(combined, "covid_econ_data.csv")
 ```
+
 
 
