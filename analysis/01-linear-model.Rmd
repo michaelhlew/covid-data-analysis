@@ -1,0 +1,25 @@
+---
+title: "Data Analysis"
+author: "Michael Lewis, Aarushi Sahejpal, Katherine Prince"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+This document contains the code needed to conduct our statistical and descriptive analyses.
+
+```{r}
+library(tidyverse)
+read_csv("../data_and_cleaning/covid_econ_data.csv") -> df
+head(df)
+```
+
+
+```{r}
+lm(average_deaths ~ estimate_number_commuting_to_work + 
+     estimate_mean_earnings_usd + 
+     estimate_health_insurance_coverage + estimate_percent_essential_workers,
+   data = combined) -> lm1
+
+summary(lm1)
+plot(lm1)
+```
