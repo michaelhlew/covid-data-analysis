@@ -4,12 +4,14 @@ author: "Michael Lewis, Aarushi Sahejpal, Katherine Prince"
 date: "`r Sys.Date()`"
 output: pdf_document
 ---
-This file will ingest and clean two datasets the American Community Survery (ACS), and COVID data. We rely on the `tidyverse` packages and  `tidycensus` to import and clean our data. For the COVID data, we call the API for `covidactnow.org` (a COVID data repository) directly. 
 
-Note: you will have to use your own API keys to run this file on your machine. We use the `keyring` package to manage our API keys. Below are the links to obtain the relevant API keys 
--- COVID Act Now https://apidocs.covidactnow.org 
--- Census https://api.census.gov/data/key_signup.html 
+This file will ingest and clean two datasets the American Community Survery (ACS), and COVID data. We rely on the `tidyverse` packages and `tidycensus` to import and clean our data. For the COVID data, we call the API for `covidactnow.org` (a COVID data repository) directly.
 
+Note: you will have to use your own API keys to run this file on your machine. We use the `keyring` package to manage our API keys. Below are the links to obtain the relevant API keys
+
+-   COVID Act Now <https://apidocs.covidactnow.org>
+
+-   Census <https://api.census.gov/data/key_signup.html>
 
 ```{r, include=FALSE}
 library(tidyverse)
@@ -22,14 +24,17 @@ library(lubridate)
 
 ### Variables of interest from ACS:
 
--- DP03_0018 Estimate!!COMMUTING TO WORK!!Workers 16 years and over
--- DP03_0065 Estimate!!INCOME AND BENEFITS (IN 2021 INFLATION-ADJUSTED DOLLARS)!!Total households!!With earnings!!Mean earnings (dollars)
--- DP03_0095 Estimate!!HEALTH INSURANCE COVERAGE!!Civilian noninstitutionalized population
--- DP03_0042P Percent!!INDUSTRY!!Civilian employed population 16 years and over!!Educational services, and health care and social assistance
+-   DP03_0018 Estimate!!COMMUTING TO WORK!!Workers 16 years and over
+
+-   DP03_0065 Estimate!!INCOME AND BENEFITS (IN 2021 INFLATION ADJUSTED DOLLARS)!!Total households!!With earnings!!Mean earnings (dollars)
+
+-   DP03_0095 Estimate!!HEALTH INSURANCE COVERAGE!!Civilian noninstitutionalized population
+
+-   DP03_0042P Percent!!INDUSTRY!!Civilian employed population 16 years and over!!Educational services, and health care and social assistance
 
 ### Getting data from ACS via `tidycensus`
 
-```{r}
+```{r, message=FALSE}
 #load in Census API key
 tidycensus::census_api_key(key_get("API_KEY_CENSUS"))
 acs_vars <- tidycensus::load_variables(year = "2021", dataset = "acs1/profile") 
@@ -43,7 +48,8 @@ ACS <- tidycensus::get_acs(
 ) 
 
 ```
-#### Cleaning ACS data 
+
+#### Cleaning ACS data
 
 ```{r}
 ACS <- ACS %>%
@@ -105,9 +111,9 @@ dc_covid <- api_to_df(API_URL_DC)
 
 #### Cleaning COVID data
 
-The COVID data returns a series of nested data frames for each state. We need to extract the `actualsTimeseries` df for each state for further cleaning. 
+The COVID data returns a series of nested data frames for each state. We need to extract the `actualsTimeseries` df for each state for further cleaning.
 
-Extract MD data: 
+Extract MD data:
 
 ```{r}
 maryland_covid <- maryland_covid %>% 
@@ -134,7 +140,7 @@ dc_covid <- dc_covid %>%
   mutate(state = "District of Columbia") #adding in State name
 ```
 
-Now we can bind together DC, MD, VA data to create on df with all the COVID data. From here we need to filter down to 2021 (to match the ACS year), and create metrics which are at the same level of analysis. In this case, we take the average cases / deaths for each county during 2021. 
+Now we can bind together DC, MD, VA data to create on df with all the COVID data. From here we need to filter down to 2021 (to match the ACS year), and create metrics which are at the same level of analysis. In this case, we take the average cases / deaths for each county during 2021.
 
 ```{r}
 #binding together MD, VA, DC data
@@ -167,6 +173,3 @@ Exporting df to a CSV file
 ```{r}
 write_csv(combined, "covid_econ_data.csv")
 ```
-
-
-
