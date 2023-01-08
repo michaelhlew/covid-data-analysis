@@ -1,0 +1,174 @@
+
+```{r, include=FALSE}
+library(tidyverse)
+library(janitor)
+library(keyring)
+library(httr)
+library(jsonlite)
+library(lubridate)
+```
+
+### Variables of interest from ACS:
+
+DP03_0119 Estimate!!PERCENTAGE OF FAMILIES AND PEOPLE WHOSE INCOME IN THE PAST 12 MONTHS IS BELOW THE POVERTY LEVEL!!All families
+
+DP03_0018 Estimate!!COMMUTING TO WORK!!Workers 16 years and over
+
+DP03_0065 Estimate!!INCOME AND BENEFITS (IN 2021 INFLATION-ADJUSTED DOLLARS)!!Total households!!With earnings!!Mean earnings (dollars)
+	
+DP03_0095 Estimate!!HEALTH INSURANCE COVERAGE!!Civilian noninstitutionalized population
+
+DP03_0042P Percent!!INDUSTRY!!Civilian employed population 16 years and over!!Educational services, and health care and social assistance
+
+DP02_0154 Estimate!!COMPUTERS AND INTERNET USE!!Total households!!With a broadband Internet subscription
+
+### Getting data from ACS via `tidycensus`
+
+```{r}
+#load in Census API key
+tidycensus::census_api_key(key_get("API_KEY_CENSUS"))
+acs_vars <- tidycensus::load_variables(year = "2021", dataset = "acs1/profile") 
+
+#get ACS data for 2021 At  the county level
+ACS <- tidycensus::get_acs(
+  geography = "county",
+  year = 2021,
+  variables = c("DP03_0119", "DP03_0018", "DP03_0065", "DP03_0095", 
+                "DP03_0042P", "DP02_0154")
+) 
+
+```
+#### Cleaning ACS data 
+
+```{r}
+ACS <- ACS %>%
+  #breakout counties and states
+  separate(NAME, into = c("county", "state"), sep = ",") %>%
+  janitor::clean_names() %>%
+  mutate(
+    state = str_trim(state),
+    county = str_trim(county),
+    
+    state = as_factor(state),
+    county = as_factor(county)
+  )  %>%
+  #focus on DC, MD, VA
+  filter(state %in% c("Maryland", "Virginia", "District of Columbia")) %>%
+  
+  #variables to labels from code
+  mutate(
+    variable = str_replace_all(variable, "DP03_0119", 
+                               "Families Below Poverty Line (percent)"),
+    variable = str_replace_all(variable, "DP03_0018", 
+                               "Number Commuting to Work"),
+    variable = str_replace_all(variable, "DP03_0065", 
+                               "Mean Earnings USD"),
+    variable = str_replace_all(variable, "DP03_0095", 
+                               "Health Insurance Coverage"),
+    variable = str_replace_all(variable, "DP03_0042P", 
+                               "Percent Essential Workers"),
+    variable = str_replace_all(variable, "DP02_0154", 
+                               "Households with internet")
+  ) %>%
+  pivot_wider(names_from = variable, values_from = c(estimate, moe)) %>%
+  clean_names()
+
+```
+
+### Getting COVID data from API `covidactnow.org`
+
+```{r}
+#formatting API call for each state
+urlMD <- 'https://api.covidactnow.org/v2/county/MD.timeseries.json?apiKey='
+urlVA <- 'https://api.covidactnow.org/v2/county/VA.timeseries.json?apiKey='
+urlDC <- 'https://api.covidactnow.org/v2/county/DC.timeseries.json?apiKey='
+
+API_URL_MD <- paste0(urlMD, key_get("COVID")) 
+API_URL_VA <- paste0(urlVA, key_get("COVID")) 
+API_URL_DC <- paste0(urlDC, key_get("COVID")) 
+
+#function to call API, clean JSON, return tibble
+api_to_df <- function(apiURL) {
+  api_out <- GET(apiURL)
+  api_out_cleaned <- fromJSON(rawToChar(api_out$content), flatten = TRUE) 
+  api_out_cleaned <- as_tibble(api_out_cleaned)
+  return(api_out_cleaned)
+}
+
+#running function for each state and saving
+maryland_covid <- api_to_df(API_URL_MD) 
+virginia_covid <- api_to_df(API_URL_VA)
+dc_covid <- api_to_df(API_URL_DC)
+
+```
+
+#### Cleaning COVID data
+
+The COVID data returns a series of nested data frames for each state. We need to extract the `actualsTimeseries` df for each state for further cleaning. 
+
+Extract MD data: 
+
+```{r}
+maryland_covid <- maryland_covid %>% 
+  select(county, cols = c(actualsTimeseries)) %>% 
+  unnest() %>% 
+  mutate(state = "Maryland") #adding in State name
+```
+
+Extract VA data:
+
+```{r}
+virginia_covid <- virginia_covid %>% 
+  select(county, cols = c(actualsTimeseries)) %>% 
+  unnest() %>% 
+  mutate(state = "Virginia") #adding in State name
+```
+
+Extract DC data:
+
+```{r}
+dc_covid <- dc_covid %>% 
+  select(county, cols = c(actualsTimeseries)) %>% 
+  unnest() %>% 
+  mutate(state = "District of Columbia") #adding in State name
+```
+
+Now we can bind together DC, MD, VA data to create on df with all the COVID data. From here we need to filter down to 2021 (to match the ACS year), and create metrics which are at the same level of analysis. In this case, we take the average cases / deaths for each county during 2021. 
+
+```{r}
+#binding together MD, VA, DC data
+dmv_covid <- bind_rows(dc_covid, maryland_covid, virginia_covid) 
+
+#filtering down to 2021 to match ACS year
+dmv_covid <- dmv_covid %>% 
+  mutate(date = ymd(date)) %>% 
+  filter(date < "2021-12-31") %>%
+  filter(date > "2020-12-31")
+
+#creating metrics at the year-level (average cases/deaths) for each county
+dmv_covid <- dmv_covid %>% 
+  group_by(county) %>% 
+  mutate(average_cases = mean(cases, na.rm = T),
+         average_deaths = mean(deaths, na.rm = T)) %>% 
+  select(county, average_cases, average_deaths) %>%
+  unique() 
+```
+
+We can now join together the COVID data and ACS data by county.
+
+```{r}
+combined <- left_join(dmv_covid, ACS) 
+glimpse(combined)
+```
+
+```{r}
+lm(average_deaths ~ estimate_number_commuting_to_work + 
+     estimate_mean_earnings_usd + 
+     estimate_health_insurance_coverage + estimate_percent_essential_workers,
+   data = combined) -> lm1
+
+summary(lm1)
+plot(lm1)
+```
+
+
