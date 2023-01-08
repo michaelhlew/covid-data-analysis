@@ -2,24 +2,71 @@
 title: "Data Analysis"
 author: "Michael Lewis, Aarushi Sahejpal, Katherine Prince"
 date: "`r Sys.Date()`"
-output: pdf_document
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
 ---
 
 This document contains the code needed to conduct our statistical and descriptive analyses.
 
-```{r}
+## Data Import 
+```{r, message=FALSE}
 library(tidyverse)
+library(stargazer)
+library(AICcmodavg)
 read_csv("../data_and_cleaning/covid_econ_data.csv") -> df
-head(df)
+```
+## Linear Model
+
+We begin 
+
+
+```{r, message=FALSE, results='asis', echo=FALSE}
+average_death.full.lm <-
+  lm(
+    average_deaths ~ estimate_percent_essential_workers +
+      estimate_health_insurance_coverage + estimate_number_commuting_to_work +
+      estimate_mean_earnings_usd,
+    data = df
+  )
+
+average_cases.full.lm <-
+  lm(
+    average_cases ~ estimate_percent_essential_workers +
+      estimate_health_insurance_coverage + estimate_number_commuting_to_work +
+      estimate_mean_earnings_usd,
+    data = df
+  )
+
+stargazer::stargazer(
+  average_cases.full.lm,
+  average_death.full.lm,
+  title = "Two Regression Models Predicting Variation in 2021 COVID Outcomes",
+  colnames = FALSE,
+  header = FALSE,
+  model.numbers = FALSE,
+  dep.var.caption = "For all counties in DC, MD, VA",
+  dep.var.labels = c("Average Cases", "Average Deaths"),
+  covariate.labels = c(
+    "Percent Essential Workers",
+    "Number of Individuals with Health Insurance",
+    "Number of Individuals Commuting to Work",
+    "Mean Earnings (USD)",
+    "Intercept"
+  ),
+  keep.stat = c("rsq", "f"),
+  notes.align = "l",
+  single.row = T,
+  add.lines = list(c(
+    "Corrected AIC", round(AICc(average_cases.full.lm), 1),  round(AICc(average_death.full.lm), 1)
+  ))
+) 
+
+plot(average_death.full.lm) 
+
 ```
 
 
-```{r}
-lm(average_deaths ~ estimate_number_commuting_to_work + 
-     estimate_mean_earnings_usd + 
-     estimate_health_insurance_coverage + estimate_percent_essential_workers,
-   data = combined) -> lm1
 
-summary(lm1)
-plot(lm1)
-```
+
