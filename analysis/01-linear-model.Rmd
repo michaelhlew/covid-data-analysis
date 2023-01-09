@@ -1,0 +1,135 @@
+---
+title: "Linear Model Analysis"
+author: "Michael Lewis, Aarushi Sahejpal, Katherine Prince"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+This document contains the code needed to conduct our statistical and descriptive analyses.
+
+## Data Import 
+```{r, message=FALSE}
+library(tidyverse)
+library(stargazer)
+library(AICcmodavg)
+read_csv("../data_and_cleaning/covid_econ_data.csv") -> df
+```
+## Linear Model
+
+### Overview
+We begin by estimating an Ordinary Least Squares (OLS) model that predicts average cases and deaths (in 2021) for all counties in DC, Maryland, and Virginia. In our model, we considered: the percent of workers that could be considered essential, the number of individuals that have health insurance, the number of workers that commute to work, and the mean individual earnings. Since state and local vaccination efforts were underway for the duration of 2021, we also controlled for average vaccinations administered. The ultimate goal of our analysis was to ascertain which economic indicators were significant in predicting COVID outcomes. 
+
+### Models 
+
+```{r, message=FALSE, results='asis', echo=FALSE}
+average_death.full.lm <-
+  lm(
+    average_deaths ~ estimate_percent_essential_workers +
+      estimate_health_insurance_coverage + estimate_number_commuting_to_work +
+      estimate_mean_earnings_usd + average_vaccinations_administered,
+    data = df
+  )
+
+average_cases.full.lm <-
+  lm(
+    average_cases ~ estimate_percent_essential_workers +
+      estimate_health_insurance_coverage + estimate_number_commuting_to_work +
+      estimate_mean_earnings_usd + average_vaccinations_administered,
+    data = df
+  )
+
+regression_table1 <- stargazer::stargazer(
+  average_cases.full.lm,
+  average_death.full.lm,
+  title = "Two Regression Models Predicting Variation in 2021 COVID Outcomes",
+  colnames = FALSE,
+  header = FALSE,
+  model.numbers = FALSE,
+  dep.var.caption = "For all counties in DC, MD, VA",
+  dep.var.labels = c("Average Cases", "Average Deaths"),
+  covariate.labels = c(
+    "Percent Essential Workers",
+    "Number of Individuals with Health Insurance",
+    "Number of Individuals Commuting to Work",
+    "Mean Earnings (USD)",
+    "Average Vaccinations Administered",
+    "Intercept"
+  ),
+  keep.stat = c("rsq", "f"),
+  notes.align = "l",
+  single.row = T,
+  add.lines = list(c(
+    "Corrected AIC", round(AICc(average_cases.full.lm), 1),  round(AICc(average_death.full.lm), 1)
+  ))
+)
+
+```
+
+Overall, our models explain about 80-90% of variation in both average cases and deaths for all counties in DC, MD, VA in 2021. The following paragraphs will dive deeper into each model and elucidate the significance of our results. 
+
+### Average Cases
+
+Our baseline model explained about 89% of the variance in average cases, however, only three of the five predictors were statistically significant. To account for this, we estimated another linear model with just the statistically significant predictors (shown in Table 2 and below).
+
+$$
+\begin{aligned}
+\widehat{Average \ Cases} =  
+164.7(Percent \ Essential \ Workers) + .039(Number \ of \ Individuals \ with \ Health \ Insurance) \\ 
++ .035(Average \ Vaccinations \ Administered) - 2691.9
+\end{aligned}
+$$
+```{r, message=FALSE, results='asis', echo=FALSE}
+average_cases_reduced <- lm(average_cases ~ estimate_percent_essential_workers + estimate_health_insurance_coverage + average_vaccinations_administered, data = df) 
+
+regression_table2 <- stargazer::stargazer(
+  average_cases_reduced, 
+  title = "Only Significant Variables for Predicting Variation in Average Cases",
+  colnames = FALSE,
+  header = FALSE,
+  model.numbers = FALSE,
+  dep.var.caption = "For all counties in DC, MD, VA",
+  dep.var.labels = c("Average Cases"),
+  covariate.labels = c(
+    "Percent Essential Workers",
+    "Number of Individuals with Health Insurance",
+    "Average Vaccinations Administered",
+    "Intercept"
+  ),
+  keep.stat = c("rsq", "f"),
+  notes.align = "l",
+  single.row = T,
+  add.lines = list(c(
+    "Corrected AIC", round(AICc(average_cases_reduced), 1)
+  ))
+) 
+
+```
+
+
+Notably, the percent of essential workers in a given county had by far the largest effect on average cases. Indeed, for every percent of workers in a county that could be classified as essential average cases will increase by about 164. The estimates for number of individuals with health insurance and average vaccinations administered were both much lower at .039 and .035, respectively. Despite being statistically significant, the estimates for these variables are so small that they are practically insignificant in the context of our analysis. 
+
+### Average Deaths
+
+Our model to predict average deaths preformed better, with a comparable R-sq at .8 and lower AIC. Every predictor was statistically significant in explaining variation in average deaths. Notably, for every additional percent in essential workers we estimate average deaths to increase by about 2.8, while holding other variables constant. We also find that as mean earnings increases, we can expect average deaths to decrease. Specifically, an increase of $10,000 in mean earnings (for a given county) is predicted to result in a decrease of ten for mean deaths, while holding other predictors constant. While we cannot say this relationship is causal -- it does highlight the importance of wealth and resources in impacting public health outcomes. Indeed, counties with higher earnings likely have better hospitals and public services, factors which one can reasonably assume have a positive impact on public health outcomes. 
+
+In our check for multicollinearity we found that the number of individuals with health insurance and number of individuals commuting to work are highly correlated as indicated by the VIF and Pearson's R-sq. Thus, we do not place much emphasis on the coefficients for these predictors. Indeed, while multicollinearity does make it difficult to disaggregate the effect of one predictor from another, it does not diminish the predictive power of a model. 
+
+Finally, there is a positive relationship between average vaccinations administered and average deaths. As was the case before, this is probably due to endogeneity concerns. Vaccinations were increasing for much of 2021, however, at the same time COVID was still wreaking havoc on communities -- and unfortunately resulting in lives being lost. This temporal aspect aside, many states/communities boosted or even prioritized vaccination efforts in areas that were particularly hard hit -- another possible factor in explaining this result. 
+
+
+$$
+\begin{aligned}
+\widehat{Average \ Deaths} =  
+2.8(Percent \ Essential \ Workers) + .003(Number \ of \ Individuals \ with \ Health \ Insurance) \\ 
+- .004(Number \ of \ Individuals \ Commuting \ to \ Work) - .001(Mean Earnings) \\
++ .0003(Average \ Vaccinations \ Administered) - 4.59
+\end{aligned}
+$$
+
+```{r}
+plot(average_death.full.lm)
+plot(average_cases_reduced)
+```
+
+
+

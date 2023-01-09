@@ -1,7 +1,0 @@
----
-title: "01-data_ingest"
-output: html_document
-date: "`r Sys.Date()`"
----
-
-his file will ingest and clean DC COVID data. 
