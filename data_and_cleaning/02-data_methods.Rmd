@@ -7,7 +7,7 @@ output:
   html_document: default
 ---
 
-# Data & Methods 
+### Data Sources
 
 This project sources two datasets in order to investigate the relationship between certain economic and social variables American Community Survey (ACS) and COVID-19 data in the DC, Maryland, and Virginia. The American Community Survey (ACS) is acquired from <https://api.census.gov/data/key_signup.html> and COVID-19 Data is acquired from <https://apidocs.covidactnow.org>.
 
@@ -25,7 +25,7 @@ In determining the variables of interest that we wanted to investigate from the 
 
 -   DP03_0095 Estimate, **Health Insurance Coverage**, Civilian noninstitutionalized population
 
--   DP03_0042P Percent, Industry, Civilian **employed** population 16 years and over, **Educational services, and health care and social assistance**
+-   DP03_0042P Percent, Industry, Civilian **employed** population 16 years and over, **Educational services, and health care and social assistance** (Note: we classify this variable as "essential employees", however, we recognize that this term is imperfect in encapsulating varying definitions of "essential" across three states and 150 plus counties. Nonetheless, we believe that these occupations generally represent what can be considered "essential" occupations during the pandemic)
 
 With the variables selected from the ACS, we first started out with time series COVID-19 data for Maryland, DC, and Virginia. We only selected the year 2021 for COVID-19 data in order to match the ACS data from 2021. We were able to get a daily cumulative case and death count from COVID ActNow, but in order to ensure that our analysis was on the same level as ACS data, we created two new variables -- average cases from 2021 and average deaths from 2021. The specific variables of interest from this data set:
 
@@ -34,9 +34,59 @@ With the variables selected from the ACS, we first started out with time series 
 
 For the purpose of building a model to assess the significance of the relationship between multiple economic and social indicators and the spread of COVID in DC, Maryland, and Virginia, we aimed to combine both data sets to prepare it for analysis. We were able to load in both Census ACS data and COVID-19 data from COVID ActNow through their respective APIs, and then subsequently cleaned the source data.
 
-For cleaning the COVID-19 data, we parsed out DC, Maryland, Virginia from our complete time series data from COVID ActNow, then created a seperate data set with just these three geographic locations, and computed average cases and deaths for each county during 2021. Then we merged both data sets to combine variables from both sets. 
+For cleaning the COVID-19 data, we parsed out DC, Maryland, Virginia from our complete time series data from COVID ActNow, then created a separate data set with just these three geographic locations, and computed average cases and deaths for each county during 2021. Then we merged both data sets to combine variables from both sets.
 
-We heavily relied on the `tidyverse` and `janitor` packages for cleaning. `Tidycensus` was extensively used to pull direct data from the ACS. Finally, we used the the `keyring`, `httr`, and `jsonlite` packages for API imports from the respective sources. 
+We heavily relied on the `tidyverse` and `janitor` packages for cleaning. `Tidycensus` was extensively used to pull direct data from the ACS. Finally, we used the the `keyring`, `httr`, and `jsonlite` packages for API imports from the respective sources.
 
-Since this project aims at investigating the relationship, and its subsequent significance, between certain economic and social indicators and COVID-19 average cases and deaths in different locales within DC, Maryland, and Virginia. Because of this goal, a linear model is the best fit to further analyze our research question. 
+Since this project aims at investigating the relationship, and its subsequent significance, between certain economic and social indicators and COVID-19 average cases and deaths in different locales within DC, Maryland, and Virginia. Because of this goal, a linear model is the best fit to further analyze our research question.
 
+### Methods
+
+We conduct a Ordinary Least Squares (OLS) regression model to explore the relationship between the aforementioned economic indicators and average COVID outcomes in 2021. We chose this method after examining the raw data and noticing patterns which indicated that a linear model may be appropriate. The below figure illustrates this phenomenon with individuals commuting to work and mean COVID deaths. While there is more variability in cases at the upper-ends, on balance the data follows a linear pattern.
+
+```{r echo=, message=FALSE, warning=FALSE}
+
+library(tidyverse)
+read_csv("covid_econ_data.csv") -> df
+
+df %>%
+ggplot(aes(y = average_deaths, x = estimate_number_commuting_to_work)) +
+  geom_point() + 
+  geom_smooth(method = "lm") + 
+  theme_bw() + 
+  labs(x = "Number of Individuals Commuting to Work", y = "Average COVID Deaths") +
+  ggtitle("The Relationship Between COVID Outcomes & Individuals Commuting to Work", subtitle = "Data for all counties in DC, MD, VA, in 2021") -> p1
+
+df %>%
+ggplot(aes(y = average_cases, x = estimate_number_commuting_to_work)) +
+  geom_point() + 
+  geom_smooth(method = "lm") + 
+  labs(x = "Number of Individuals Commuting to Work", y = "Average COVID Cases") +
+  theme_bw() -> p2
+
+gridExtra::grid.arrange(p1, p2, ncol = 1)
+
+```
+
+Other variables also show evidence of a linear relationship. In our exploratory data analysis we found a positive association between health insurance coverage (or number of individuals in a given county with health insurance) and COVID deaths and cases. This was finding seemed counter intuitive and was something we wanted to examine more closely after controlling for the impact of other factors.
+
+```{r}
+df %>%
+ggplot(aes(y = average_deaths, x = estimate_health_insurance_coverage)) +
+  geom_point() + 
+  geom_smooth(method = "lm") + 
+  theme_bw() + 
+  labs(y = "Average COVID Deaths", x = "Health Insurance Coverage") +
+  ggtitle("The Relationship Between COVID Outcomes & Health Insurance Coverage", subtitle = "Data for all counties in DC, MD, VA, in 2021") -> p1
+
+df %>%
+ggplot(aes(y = average_cases, x = estimate_health_insurance_coverage)) +
+  geom_point() + 
+  geom_smooth(method = "lm") + 
+  theme_bw() + 
+  labs(y = "Average COVID Cases", x = "Health Insurance Coverage")  -> p2
+
+gridExtra::grid.arrange(p1, p2, ncol = 1)
+```
+
+This exploratory data analysis led us to pursue linear regression as a method for analyzing multiple economic indicators and mean COVID outcomes. Specifically, we arrived at three research questions: (1) is health insurance coverage still positively associated with worse COVID outcomes even after controlling for the effects of other predictors, (2) what variables had the largest effect on mean COVID cases and deaths, and (3) how important is wealth in predicting COVID outcomes?
