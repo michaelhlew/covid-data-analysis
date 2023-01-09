@@ -1,0 +1,229 @@
+
+---
+title: "Viz"
+author: "Michael Lewis, Aarushi Sahejpal, Katherine Prince"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(sf)
+library(terra)
+library(dplyr)
+library(spData)
+library(spDataLarge)
+library(tmap)    
+library(leaflet) 
+library(ggplot2) # tidyverse data visualization package
+```
+
+## Virginia
+
+DP03_0018 Estimate!!COMMUTING TO WORK!!Workers 16 years and over
+```{r}
+library(tidycensus)
+options(tigris_use_cache = TRUE)
+
+va_commute <- get_acs(
+  geography = "tract", 
+  variables = "DP03_0018",
+  state = "VA", 
+  year = 2021,
+  geometry = TRUE
+) 
+
+
+plot(va_commute["estimate"])
+```
+
+DP03_0065 Estimate!!INCOME AND BENEFITS (IN 2021 INFLATION ADJUSTED DOLLARS)!!Total households!!With earnings!!Mean earnings (dollars)
+```{r}
+library(tidycensus)
+options(tigris_use_cache = TRUE)
+
+va_income <- get_acs(
+  geography = "tract", 
+  variables = "DP03_0065",
+  state = "VA", 
+  year = 2021,
+  geometry = TRUE
+) 
+
+
+plot(va_income["estimate"])
+```
+DP03_0095 Estimate!!HEALTH INSURANCE COVERAGE!!Civilian noninstitutionalized population
+```{r}
+library(tidycensus)
+options(tigris_use_cache = TRUE)
+
+va_insurance <- get_acs(
+  geography = "tract", 
+  variables = "DP03_0095",
+  state = "VA", 
+  year = 2021,
+  geometry = TRUE
+) 
+
+
+plot(va_insurance["estimate"])
+```
+DP03_0042P Percent!!INDUSTRY!!Civilian employed population 16 years and over!!Educational services, and health care and social assistance
+```{r}
+library(tidycensus)
+options(tigris_use_cache = TRUE)
+
+va_essential <- get_acs(
+  geography = "tract", 
+  variables = "DP03_0042P",
+  state = "VA", 
+  year = 2021,
+  geometry = TRUE
+) 
+
+
+plot(va_essential["estimate"])
+```
+## DC
+
+DP03_0018 Estimate!!COMMUTING TO WORK!!Workers 16 years and over
+```{r}
+library(tidycensus)
+options(tigris_use_cache = TRUE)
+
+dc_commute <- get_acs(
+  geography = "tract", 
+  variables = "DP03_0018",
+  state = "DC", 
+  year = 2021,
+  geometry = TRUE
+) 
+
+
+plot(dc_commute["estimate"])
+```
+
+DP03_0065 Estimate!!INCOME AND BENEFITS (IN 2021 INFLATION ADJUSTED DOLLARS)!!Total households!!With earnings!!Mean earnings (dollars)
+```{r}
+library(tidycensus)
+options(tigris_use_cache = TRUE)
+
+dc_income <- get_acs(
+  geography = "tract", 
+  variables = "DP03_0065",
+  state = "DC", 
+  year = 2021,
+  geometry = TRUE
+) 
+
+
+plot(dc_income["estimate"])
+```
+
+DP03_0095 Estimate!!HEALTH INSURANCE COVERAGE!!Civilian noninstitutionalized population
+```{r}
+library(tidycensus)
+options(tigris_use_cache = TRUE)
+
+dc_insurance <- get_acs(
+  geography = "tract", 
+  variables = "DP03_0095",
+  state = "DC", 
+  year = 2021,
+  geometry = TRUE
+) 
+
+
+plot(dc_insurance["estimate"])
+```
+
+DP03_0042P Percent!!INDUSTRY!!Civilian employed population 16 years and over!!Educational services, and health care and social assistance
+```{r}
+library(tidycensus)
+options(tigris_use_cache = TRUE)
+
+dc_essential <- get_acs(
+  geography = "tract", 
+  variables = "DP03_0042P",
+  state = "DC", 
+  year = 2021,
+  geometry = TRUE
+) 
+
+
+plot(dc_essential["estimate"])
+```
+
+## Maryland
+
+DP03_0018 Estimate!!COMMUTING TO WORK!!Workers 16 years and over
+```{r}
+library(tidycensus)
+options(tigris_use_cache = TRUE)
+
+md_commute <- get_acs(
+  geography = "tract", 
+  variables = "DP03_0018",
+  state = "MD", 
+  year = 2021,
+  geometry = TRUE
+) 
+
+
+plot(md_commute["estimate"])
+```
+
+DP03_0065 Estimate!!INCOME AND BENEFITS (IN 2021 INFLATION ADJUSTED DOLLARS)!!Total households!!With earnings!!Mean earnings (dollars)
+```{r}
+library(tidycensus)
+options(tigris_use_cache = TRUE)
+
+md_income <- get_acs(
+  geography = "tract", 
+  variables = "DP03_0065",
+  state = "MD", 
+  year = 2021,
+  geometry = TRUE
+) 
+
+
+plot(md_income["estimate"])
+```
+
+DP03_0095 Estimate!!HEALTH INSURANCE COVERAGE!!Civilian noninstitutionalized population
+```{r}
+library(tidycensus)
+options(tigris_use_cache = TRUE)
+
+md_insurance <- get_acs(
+  geography = "tract", 
+  variables = "DP03_0095",
+  state = "MD", 
+  year = 2021,
+  geometry = TRUE
+) 
+
+
+plot(md_insurance["estimate"])
+```
+
+DP03_0042P Percent!!INDUSTRY!!Civilian employed population 16 years and over!!Educational services, and health care and social assistance
+```{r}
+library(tidycensus)
+options(tigris_use_cache = TRUE)
+
+md_essential <- get_acs(
+  geography = "tract", 
+  variables = "DP03_0042P",
+  state = "MD", 
+  year = 2021,
+  geometry = TRUE
+) 
+
+
+plot(md_essential["estimate"])
+```
