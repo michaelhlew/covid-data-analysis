@@ -71,7 +71,7 @@ For the purpose of building a model to assess the significance of the relationsh
 
 For cleaning the COVID-19 data, we parsed out DC, Maryland, Virginia from our complete time series data from COVID ActNow, then created a separate data set with just these three geographic locations, and computed average cases and deaths for each county during 2021. Then we merged both data sets to combine variables from both sets.
 
-We conduct our analyzing using R version `r paste(R.version$major, R.version$minor, sep = ".")` [@rcoreteam22]. To clean our data we primarily used the `tidyverse` [@wickhamtidyverse] packages as well as `janitor` and `lubridate`. Data collection was aided by the `tidycensus` package, which allowed us to pull direct data from the ACS/US Census Bureau. Finally, we used the the `keyring`, `httr`, and `jsonlite` packages for API imports from the respective sources.
+We conduct our analyzing using R version `r paste(R.version$major, R.version$minor, sep = ".")` [@rcoreteam22]. To clean our data we primarily used the `tidyverse` [@wickhamtidyverse] packages as well as `janitor` and `lubridate`. Data collection was aided by the `tidycensus` package, which allowed us to pull direct data from the ACS/US Census Bureau. Data analysis/visualization was conducted using `ggplot2` from the Tidyverse, as well as `stargazer` to create tables [@hlavac18]. Finally, we used the the `keyring`, `httr`, and `jsonlite` packages for API imports from the respective sources.
 
 Since this project aims at investigating the relationship, and its subsequent significance, between certain economic and social indicators and COVID-19 average cases and deaths in different locales within DC, Maryland, and Virginia. Because of this goal, a linear model is the best fit to further analyze our research question.
 
@@ -132,36 +132,56 @@ Note that this section may be integrated into Section \ref{section:data}, if joi
 
 Our results for the `cars` data include estimating the linear model
 
-$$\text{Distance}_i = \beta_0 + \beta_1 (\text{Speed}_i) + \epsilon_i.$$
+$$
+\begin{aligned}
+\widehat{Average \ Cases_i} =  
+\beta_0 + \beta_2(Percent \ Essential \ Workers_i) + \beta_2(Number \ of \ Individuals \ with \ Health \ Insurance_i) \\ 
++ \beta_3(Average \ Vaccinations \ Administered_i) + \epsilon_i
+\end{aligned}
+$$
+```{r, message=FALSE, results='asis', echo=FALSE}
+average_death.full.lm <-
+  lm(
+    average_deaths ~ estimate_percent_essential_workers +
+      estimate_health_insurance_coverage + estimate_number_commuting_to_work +
+      estimate_mean_earnings_usd + average_vaccinations_administered,
+    data = df
+  )
 
-```{r echo=FALSE}
-# Estimate a linear model:
-lm_out <- lm(dist ~ speed, data = cars)
-# Extract the coefficient on speed:
-cars_speed_coef <- coef(lm_out)["speed"]
+average_cases.full.lm <-
+  lm(
+    average_cases ~ estimate_percent_essential_workers +
+      estimate_health_insurance_coverage + estimate_number_commuting_to_work +
+      estimate_mean_earnings_usd + average_vaccinations_administered,
+    data = df
+  )
+
+regression_table1 <- stargazer::stargazer(
+  average_cases.full.lm,
+  average_death.full.lm,
+  title = "Two Regression Models Predicting Variation in 2021 COVID Outcomes",
+  colnames = FALSE,
+  header = FALSE,
+  model.numbers = FALSE,
+  dep.var.caption = "For all counties in DC, MD, VA",
+  dep.var.labels = c("Average Cases", "Average Deaths"),
+  covariate.labels = c(
+    "Percent Essential Workers",
+    "Number of Individuals with Health Insurance",
+    "Number of Individuals Commuting to Work",
+    "Mean Earnings (USD)",
+    "Average Vaccinations Administered",
+    "Intercept"
+  ),
+  keep.stat = c("rsq", "f"),
+  notes.align = "l",
+  single.row = T,
+  add.lines = list(c(
+    "Corrected AIC", round(AICc(average_cases.full.lm), 1),  round(AICc(average_death.full.lm), 1)
+  ))
+)
 ```
 
-Below we show the model estimates. The first table uses `xtable()`, the second uses `stargazer()` [@hlavac18].
-
-```{r echo=FALSE, message=FALSE, results='asis'}
-# We can print regression tables with xtable or stargazer:
-regr_table <- xtable::xtable(lm_out,
-                             digits = 2,
-                             caption = "Our Informative Caption")
-
-print(regr_table, comment = FALSE)
-```
-
-```{r echo=FALSE, message=FALSE, results='asis'}
-# We can print regression tables with xtable or stargazer:
-stargazer::stargazer(lm_out, 
-                     title = "Our Informative Title",
-                     dep.var.caption = "Outcome",
-                     digits = 2,
-                     header = FALSE)
-```
-
-Using the `cars` data, we find that each unit of speed is associated with `r round(cars_speed_coef, 1)` more units of distance. We draw out what this really means, and what it implies. For example, if a typical difference among our observations is 7 units of speed, then our model estimates that a typical difference in distance among our observations is $7 \times `r round(cars_speed_coef, 1)` = `r 7 * round(cars_speed_coef, 1)`$ units of distance. We describe the substantive relevance of this number.
 
 # Discussion
 
