@@ -1,0 +1,18 @@
+---
+title: "04-lit"
+author: "Aarushi Sahejpal"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Existing Scholarly Discourse
+
+This paper and project came about as a result of the increasing amount of scholarly and peer-reviewed literature that sheds light on the ever-present and visible economic, social, and medical disparities that resulted directly from the COVID-19 pandemic. Among this literary discourse, there is overwhelming agreement that strong disparities are present within the American population as a result of individuals who contracted and/or died from COVID-19. Not only are there existing risk factors that make certain marginalized members of populations more susceptible to impact from contraction of COVID-19 but the harms of contraction are further exacerbated [Abedi et al. 2021]. With evidence that a large burden of the brute impacts of COVID-19 are felt by the country's essential workers, low-income populations, and by those who found healthcare inaccessible, our research question and variable selection is informed with this insight in mind [Kantamneni 2020]. Even in some of the more basic health instructions administered by the United States government, such as social distancing, there are severe disparities by level of commute and income level in being able to adhere to those restrictions [Garnier et al.] From the American Community Survey, one the country's leading resources for measuring impacts among populations in the United States, we select economic, social, and health indicators to further evaluate the nature of the impact that COVID-19 truly had within the population of the United States.
+
+With a large portion of the scholarly conversation surrounding the interdisciplinary human impact of COVID-19 being centered around the United States, we decide to take a micro approach to see its specific impact in our communities of DC, Maryland, and Virginia. 
