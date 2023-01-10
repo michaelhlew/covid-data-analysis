@@ -20,6 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(stargazer)
 library(AICcmodavg)
+library(gridExtra)
 read_csv("../data_and_cleaning/covid_econ_data.csv") -> df
 ```
 
@@ -41,7 +42,7 @@ In order to integrate citations into the References section below, we add entrie
 
 # Data and Methods
 
-\label{section:data}
+### Data Sources
 
 This project sources two datasets in order to investigate the relationship between certain economic and social variables American Community Survey (ACS) and COVID-19 data in the DC, Maryland, and Virginia. The American Community Survey (ACS) is acquired from <https://api.census.gov/data/key_signup.html> and COVID-19 Data is acquired from <https://apidocs.covidactnow.org>.
 
@@ -73,6 +74,54 @@ For cleaning the COVID-19 data, we parsed out DC, Maryland, Virginia from our co
 We conduct our analyzing using R version `r paste(R.version$major, R.version$minor, sep = ".")` [@rcoreteam22]. To clean our data we primarily used the `tidyverse` [@wickhamtidyverse] packages as well as `janitor` and `lubridate`. Data collection was aided by the `tidycensus` package, which allowed us to pull direct data from the ACS/US Census Bureau. Finally, we used the the `keyring`, `httr`, and `jsonlite` packages for API imports from the respective sources.
 
 Since this project aims at investigating the relationship, and its subsequent significance, between certain economic and social indicators and COVID-19 average cases and deaths in different locales within DC, Maryland, and Virginia. Because of this goal, a linear model is the best fit to further analyze our research question.
+
+## Methods
+
+We conduct a Ordinary Least Squares (OLS) regression model to explore the relationship between the aforementioned economic indicators and average COVID outcomes in 2021. We chose this method after examining the raw data and noticing patterns which indicated that a linear model may be appropriate. The below figure illustrates this phenomenon with individuals commuting to work and mean COVID deaths. While there is more variability in cases at the upper-ends, on balance the data follows a linear pattern.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+p1 <- df %>%
+  ggplot(aes(y = average_deaths, x = estimate_number_commuting_to_work)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  theme_bw() +
+  labs(x = "Number of Individuals Commuting to Work", 
+       y = "Average COVID Deaths") +
+  ggtitle("The Relationship Between COVID Outcomes & Individuals Commuting to Work",
+          subtitle = "Data for all counties in DC, MD, VA, in 2021")
+
+p2 <- df %>%
+  ggplot(aes(y = average_cases, x = estimate_number_commuting_to_work)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs(x = "Number of Individuals Commuting to Work", y = "Average COVID Cases") +
+  theme_bw()
+
+gridExtra::grid.arrange(p1, p2, ncol = 1)
+```
+
+Other variables also show evidence of a linear relationship. In our exploratory data analysis we found a positive association between health insurance coverage (or number of individuals in a given county with health insurance) and COVID deaths and cases. This was finding seemed counter intuitive and was something we wanted to examine more closely after controlling for the impact of other factors.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+p1 <- df %>%
+ggplot(aes(y = average_deaths, x = estimate_health_insurance_coverage)) +
+  geom_point() + 
+  geom_smooth(method = "lm") + 
+  theme_bw() + 
+  labs(y = "Average COVID Deaths", x = "Health Insurance Coverage") +
+  ggtitle("The Relationship Between COVID Outcomes & Health Insurance Coverage", 
+          subtitle = "Data for all counties in DC, MD, VA, in 2021") 
+
+p2 <- df %>%
+ggplot(aes(y = average_cases, x = estimate_health_insurance_coverage)) +
+  geom_point() + 
+  geom_smooth(method = "lm") + 
+  theme_bw() + 
+  labs(y = "Average COVID Cases", x = "Health Insurance Coverage")  
+
+gridExtra::grid.arrange(p1, p2, ncol = 1)
+```
+
 
 # [Our Results Section Title Here]
 
