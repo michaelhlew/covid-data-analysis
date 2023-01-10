@@ -2,7 +2,7 @@
 title: "Analyzing the Relationship of Economic Indicators on COVID-19 Outcomes"
 author: 
   - Michael Lewis^[SIS/CAS, American University]
-  - Your Name2^[American University]
+  - Aarushi Sahejpal^[CAS, American University]
 date: "2022-11-28"
 abstract: "This is our informative abstract of fewer than 200 words. It describes what we investigate, how we investigate it, and what we find."
 output: 
@@ -32,13 +32,11 @@ We remember that our paper is not a mystery novel. We note our core results earl
 
 Throughout our paper, we use active, first-person language and avoid the passive voice. For example, we write "we examine the relationship between $X$ and $Y$"; we do not write "the relationship between $X$ and $Y$ was examined." Where we do the analysis, we speak about it transparently.
 
-# [Our Substance and Context Section Title Here]
+# Existing Scholarly Discourse
 
-Here we go deeper into the intellectual debate, the political and social context of our investigation. To give the reader a clear sense of why we are writing this paper, we describe the relevant scholarly, technical, or popular literature. We give this section a meaningful *substantive* title; it is not entitled "Literature Review", for example. We cite at least three published, peer-reviewed scholarly works. For example, we could cite which we discussed in class.[^1] We only cite others' work in our paper when it enhances the reader's understanding of what we, the authors of this paper, are doing. We connect everything we cite to *our* investigation; this is our original research, not a book report or an annotated bibliography.
+This paper and project came about as a result of the increasing amount of scholarly and peer-reviewed literature that sheds light on the ever-present and visible economic, social, and medical disparities that resulted directly from the COVID-19 pandemic. Among this literary discourse, there is overwhelming agreement that strong disparities are present within the American population as a result of individuals who contracted and/or died from COVID-19. Not only are there existing risk factors that make certain marginalized members of populations more susceptible to impact from contraction of COVID-19 but the harms of contraction are further exacerbated [@abedi_racial_2021]. With evidence that a large burden of the brute impacts of COVID-19 are felt by the country's essential workers, low-income populations, and by those who found healthcare inaccessible, our research question and variable selection is informed with this insight in mind [@kantamneni_impact_2020]. Even in some of the more basic health instructions administered by the United States government, such as social distancing, there are severe disparities by level of commute and income level in being able to adhere to those restrictions [@garnier_socioeconomic_2021]. From the American Community Survey, one the country's leading resources for measuring impacts among populations in the United States, we select economic, social, and health indicators to further evaluate the nature of the impact that COVID-19 truly had within the population of the United States.
 
-[^1]: To cite a paper within parentheses, use, e.g., 
-
-In order to integrate citations into the References section below, we add entries into our file `main.bib`. This is a plain-text file that we edit in RStudio. We store `main.bib` in the same folder as our paper's `.Rmd` and `.pdf` files. Its entries are formatted so that they can be knit to `.pdf`; see [https://j.mp/2UzTXEZ](https://www.overleaf.com/learn/latex/Bibliography_management_with_bibtex#The_bibliography_file) for example entries for articles, books, and miscellaneous. We can get these entries automatically from Google Scholar by turning on BibTeX in the Google Scholar Settings - Bibliography Manager. Perhaps we use a tool like free, open-source BibDesk to help us manage the `.bib` file.
+With a large portion of the scholarly conversation surrounding the interdisciplinary human impact of COVID-19 being centered around the United States, we decide to take a micro approach to see its specific impact in our communities of DC, Maryland, and Virginia. 
 
 # Data and Methods
 
