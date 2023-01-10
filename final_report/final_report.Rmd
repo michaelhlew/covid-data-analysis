@@ -1,5 +1,5 @@
 ---
-title: "Analyzing the Effect of Economic Indicators on COVID Outcomes"
+title: "Analyzing the Relationship of Economic Indicators on COVID-19 Outcomes"
 author: 
   - Michael Lewis^[SIS/CAS, American University]
   - Your Name2^[American University]
@@ -42,7 +42,7 @@ In order to integrate citations into the References section below, we add entrie
 
 # Data and Methods
 
-### Data Sources
+## Data Sources
 
 This project sources two datasets in order to investigate the relationship between certain economic and social variables American Community Survey (ACS) and COVID-19 data in the DC, Maryland, and Virginia. The American Community Survey (ACS) is acquired from <https://api.census.gov/data/key_signup.html> and COVID-19 Data is acquired from <https://apidocs.covidactnow.org>.
 
@@ -100,7 +100,7 @@ p2 <- df %>%
 gridExtra::grid.arrange(p1, p2, ncol = 1)
 ```
 
-Other variables also show evidence of a linear relationship. In our exploratory data analysis we found a positive association between health insurance coverage (or number of individuals in a given county with health insurance) and COVID deaths and cases. This was finding seemed counter intuitive and was something we wanted to examine more closely after controlling for the impact of other factors.
+Other variables also show evidence of a linear relationship. In our exploratory data analysis we found a positive association between health insurance coverage (or number of individuals in a given county with health insurance) and COVID deaths and cases. This finding seemed counter intuitive and was something we wanted to examine more closely after controlling for the effect of other predictors.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 p1 <- df %>%
@@ -122,8 +122,9 @@ ggplot(aes(y = average_cases, x = estimate_health_insurance_coverage)) +
 gridExtra::grid.arrange(p1, p2, ncol = 1)
 ```
 
+This exploratory data analysis led us to pursue linear regression as a method for analyzing multiple economic indicators and mean COVID outcomes. Specifically, we arrived at three research questions: (1) is health insurance coverage still positively associated with worse COVID outcomes even after controlling for the effects of other predictors, (2) what variables had the largest effect on mean COVID cases and deaths, and (3) how important is wealth in predicting COVID outcomes? The next section will discuss our model and results. 
 
-# [Our Results Section Title Here]
+# Findings
 
 Here, we explain and interpret our results. We try to learn as much as we can about our question as possible, given the data and analysis. We present our results clearly. We interpret them for the reader with precision and circumspection. We avoid making claims that are not substantiated by our data.
 
