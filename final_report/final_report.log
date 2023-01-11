@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.1.4)  11 JAN 2023 14:26
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.1.4)  11 JAN 2023 14:38
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -497,11 +497,11 @@ LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 25
 (/Users/michaellewis/Library/TinyTeX/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-<final_report_files/figure-latex/unnamed-chunk-2-1.pdf, id=35, 356.33125pt x 279.0425pt>
+<final_report_files/figure-latex/unnamed-chunk-2-1.pdf, id=35, 351.3125pt x 279.0425pt>
 File: final_report_files/figure-latex/unnamed-chunk-2-1.pdf Graphic file (type pdf)
 <use final_report_files/figure-latex/unnamed-chunk-2-1.pdf>
 Package pdftex.def Info: final_report_files/figure-latex/unnamed-chunk-2-1.pdf  used on input line 282.
-(pdftex.def)             Requested size: 356.34123pt x 279.05032pt.
+(pdftex.def)             Requested size: 351.32234pt x 279.05032pt.
 [3 <./final_report_files/figure-latex/unnamed-chunk-2-1.pdf>]
 Overfull \hbox (33.82945pt too wide) detected at line 360
 [][]
@@ -548,7 +548,7 @@ Here is how much of TeX's memory you used:
  14 hyphenation exceptions out of 8191
  86i,11n,91p,408b,512s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {/Users/michaellewis/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/Users/michaellewis/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/Users/michaellewis/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/Users/michaellewis/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/Users/michaellewis/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}</Users/michaellewis/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/michaellewis/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/michaellewis/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx9.pfb></Users/michaellewis/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></Users/michaellewis/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi7.pfb></Users/michaellewis/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/michaellewis/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/michaellewis/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></Users/michaellewis/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr6.pfb></Users/michaellewis/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb></Users/michaellewis/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb></Users/michaellewis/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr9.pfb></Users/michaellewis/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/michaellewis/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></Users/michaellewis/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy7.pfb></Users/michaellewis/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></Users/michaellewis/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on final_report.pdf (10 pages, 426717 bytes).
+Output written on final_report.pdf (10 pages, 426689 bytes).
 PDF statistics:
  300 PDF objects out of 1000 (max. 8388607)
  233 compressed objects within 3 object streams

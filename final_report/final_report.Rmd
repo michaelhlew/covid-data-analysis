@@ -91,7 +91,7 @@ p1 <- df %>%
   theme_bw() +
   labs(x = "",
        y = "Average Deaths") +
-  ggtitle("The Relationship Between COVID Outcomes & Individuals Commuting to Work",
+  ggtitle("COVID Outcomes vs Individuals Commuting to Work",
           subtitle = "Data for all counties in DC, MD, VA, in 2021")
 
 p2 <- df %>%
