@@ -32,11 +32,11 @@ read_csv("../data_and_cleaning/covid_econ_data.csv") -> df
 
 # Introduction
 
-In this section, we introduce the reader to the phenomenon we investigate. We describe the way in which our analysis contributes to an important intellectual debate, or how it answers a pressing political or social question. We introduce our hypotheses, data, and results. We signpost for the reader what's coming in the rest of the paper.
+This project investigates the spread and impact of COVID-19 among populations in DC, Maryland, and Virginia. But more specifically, it focuses on looking directly at how COVID-19 intersects with different social, economic, and health determinants that impact the American population. As to be noted in the subsequent sections, the COVID-19 pandemic's impact on the United States has, and is, well documented but there is a local lens that is missing from the analysis of its true impacts, hence the goal of this project. 
 
-We remember that our paper is not a mystery novel. We note our core results early and often.
+Using data from the American Community Survey and COVID ActNow, through the mechanism of an Ordinary Least Squares (OLS) regression model, this project aims answering three research questions specifically for DC, Maryland, and Virginia: (1) is health insurance coverage still positively associated with worse COVID outcomes even after controlling for the effects of other predictors, (2) what variables had the largest effect on mean COVID cases and deaths, and (3) how important is wealth in predicting COVID outcomes? We hypothesis that (1) health insurance coverage is negatively correlated with COVID-19 cases and deaths, (2) that counties with more essential workers and more individuals commuting to work would have more COVID-19 cases and deaths, (3) as mean earnings increase for a county, average COVID-19 cases and deaths decrease. 
 
-Throughout our paper, we use active, first-person language and avoid the passive voice. For example, we write "we examine the relationship between $X$ and $Y$"; we do not write "the relationship between $X$ and $Y$ was examined." Where we do the analysis, we speak about it transparently.
+This paper dives into our variable selection, data sourcing and cleaning, methods for the regression model, our findings, impact, and limitations of our analysis. We find that health insurance coverage is positively associated with COVID-19 cases and deaths, that counties with a higher percentage of essential workers and more individuals commuting to work have higher average COVID-19 cases and deaths, and as mean earnings increase for a county, average COVID-19 cases and deaths decrease.
 
 # COVID-19 Driven Disparities
 
