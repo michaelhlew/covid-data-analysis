@@ -27,7 +27,7 @@ library(stargazer)
 library(AICcmodavg)
 library(gridExtra)
 library(gt)
-read_csv("../data_and_cleaning/covid_econ_data.csv") -> df
+read_csv("../data_and_cleaning/covid_econ_data_population_revised.csv") -> df
 ```
 
 # Introduction
