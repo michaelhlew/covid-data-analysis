@@ -1,0 +1,61 @@
+---
+title: "Population"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+## Feedback from presentation add in population
+
+```{r}
+library(tidyverse)
+population <- readxl::read_xlsx("population.xlsx")
+
+population <- population %>% rename("county" = "County") 
+df <- read_csv("covid_econ_data.csv")
+```
+
+## Join with existing data 
+```{r}
+left_join(df, population) -> df
+```
+
+## New variables as rate of population
+
+```{r}
+df <- df %>%
+  mutate(
+    estimate_number_commuting_to_work = estimate_number_commuting_to_work /
+      Population,
+    estimate_percent_essential_workers = estimate_percent_essential_workers /
+      Population,
+    estimate_mean_earnings_usd = estimate_mean_earnings_usd / Population,
+    average_cases = average_cases / Population,
+    average_deaths = average_deaths / Population,
+    average_vaccinations_administered = average_vaccinations_administered /
+      Population
+  )
+```
+
+
+```{r}
+average_death.full.lm <-
+  lm(
+    average_deaths ~ estimate_percent_essential_workers +
+      estimate_health_insurance_coverage + estimate_number_commuting_to_work +
+      estimate_mean_earnings_usd + average_vaccinations_administered,
+    data = df
+  )
+
+average_cases.full.lm <-
+  lm(
+    average_cases ~ estimate_percent_essential_workers +
+      estimate_health_insurance_coverage + estimate_number_commuting_to_work +
+      estimate_mean_earnings_usd + average_vaccinations_administered,
+    data = df
+  )
+```
+
+```{r}
+write_csv(df, "covid_econ_data_population_revised.csv")
+```
+
