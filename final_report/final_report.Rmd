@@ -73,7 +73,7 @@ With the variables selected from the ACS, we first start out with time series CO
 
 For the purpose of building a model to assess the significance of the relationship between multiple economic and social indicators and the spread of COVID in DC, Maryland, and Virginia, we combine both data sets to prepare it for analysis. We are able to load in both Census ACS data and COVID-19 data from COVID ActNow through their respective APIs, and then subsequently clean the source data.
 
-For cleaning the COVID-19 data, we parse out DC, Maryland, Virginia from our complete time series data from COVID ActNow, then create a separate data set with just these three geographic locations, and compute average cases and deaths for each county during 2021. Then we merge both data sets to combine variables from both individual source sets.
+For cleaning the COVID-19 data, we parse out DC, Maryland, Virginia from our complete time series data from COVID ActNow, then create a separate data set with just these three geographic locations, and compute average cases and deaths for each county during 2021. Then we merge both data sets to combine variables from both individual source sets. Finally, we recalculate all the variables as a rate based on the 2021 population for each county (population data was gathered from the US Census).
 
 We conduct our analyzing using R version `r paste(R.version$major, R.version$minor, sep = ".")` [@rcoreteam22]. To clean our data we primarily used the `tidyverse` [@wickhamtidyverse] packages as well as `janitor` and `lubridate`. Data collection is aided by the `tidycensus` package, which allows us to pull direct data from the ACS/US Census Bureau. Data analysis/visualization is conducted using `ggplot2` from the Tidyverse, as well as `stargazer` to create tables [@hlavac18]. Finally, we use the `keyring`, `httr`, and `jsonlite` packages for API imports from the respective sources.
 
@@ -113,7 +113,7 @@ This exploratory data analysis leads us to pursue linear regression as a method 
 
 We begin by estimating an Ordinary Least Squares (OLS) model that predicts average cases and deaths (in 2021) for all counties in DC, Maryland, and Virginia. In our model, we consider: the percent of workers that could be considered essential, the number of individuals that have health insurance, the number of workers that commute to work, and the mean individual earnings. Since state and local vaccination efforts were underway for the duration of 2021, we also control for average vaccinations administered. The ultimate goal of our analysis is to ascertain which economic indicators were significant in predicting COVID outcomes.
 
-Overall, our models explain about 80-90% of variation in both average cases and deaths for all counties in DC, MD, VA in 2021. The following paragraphs will dive deeper into each model and elucidate the significance of our results.
+Overall, our models explain about 27-41% of variation in both average cases and deaths for all counties in DC, MD, VA in 2021. The following paragraphs will dive deeper into each model and elucidate the significance of our results.
 
 ```{r, message=FALSE, results='asis', echo=FALSE}
 average_death.full.lm <-
@@ -160,55 +160,32 @@ regression_table1 <- stargazer::stargazer(
 
 ## Average Cases
 
-Our baseline model explains about 89% of the variance in average cases, however, only three of the five predictors were statistically significant. To account for this, we estimate another linear model using just the variables identified from a forward stepwise selection at $\alpha = .05$. The results are shown in Table 2 and below.
+Our baseline model explains about 41% of the variance in average cases. With every variable except average vaccinations being significant at least at  $\alpha = .05$. 
+
 
 $$
 \begin{aligned}
 \widehat{Average \ Cases_i} =  
 \beta_0 + \beta_2(Percent \ Essential \ Workers_i) + \beta_2(Number \ of \ Individuals \ with \ Health \ Insurance_i) \\ 
-+ \beta_3(Average \ Vaccinations \ Administered_i) + \epsilon_i
++ \beta_3(Average \ Vaccinations \ Administered_i) + 
+\beta_4(Mean \ Earnings_1) \\ + 
+\beta_5(Number \ of \ Individuals \ Commuting \ to \ Work_i)
++ \epsilon_i
 \end{aligned}
 $$
 
-```{r, message=FALSE, results='asis', echo=FALSE}
-average_cases_reduced <- lm(average_cases ~ estimate_percent_essential_workers + estimate_health_insurance_coverage + average_vaccinations_administered, data = df) 
-
-regression_table2 <- stargazer::stargazer(
-  average_cases_reduced, 
-  title = "Only Significant Variables for Predicting Variation in Average Cases",
-  colnames = FALSE,
-  header = FALSE,
-  model.numbers = FALSE,
-  dep.var.caption = "For all counties in DC, MD, VA",
-  dep.var.labels = c("Average Cases"),
-  covariate.labels = c(
-    "Percent Essential Workers",
-    "Number of Individuals with Health Insurance",
-    "Average Vaccinations Administered",
-    "Intercept"
-  ),
-  keep.stat = c("rsq", "f"),
-  notes.align = "l",
-  single.row = T,
-  add.lines = list(c(
-    "Corrected AIC", round(AICc(average_cases_reduced), 1)
-  ))
-) 
-
-```
-
-Notably, the percent of essential workers in a given county has by far the largest effect on average cases. Indeed, for every percent of workers in a county that could be classified as essential average cases will increase by about 164. The estimates for number of individuals with health insurance and average vaccinations administered are both much lower at .039 and .035, respectively. Despite being statistically significant, the estimates for these variables are small enough that they largely lack practical significance in the context of our analysis.
+Notably, the percent of essential workers in a given county has by far the largest effect on average cases. Indeed, for every percent of workers in a county that could be classified as essential average cases will increase by about 21. The estimates for number of individuals with health insurance and average vaccinations administered are both nearly zero, and thus practically insignficant. For mean earnings, we predict that an increase in .007 
 
 The model assumptions are generally satisfactory. A histogram of the residuals shows that the residuals follow a normal distribution despite some outlying values on both the upper and lower tails. This is also confirmed by the normal Q-Q plot which shows that most of the residuals follow a normal pattern.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(average_cases_reduced, aes(x = .resid)) +
+ggplot(average_cases.full.lm, aes(x = .resid)) +
   geom_histogram() + 
   labs(x = "Residuals", y = "Density") + 
   theme_bw() + 
   ggtitle("Histogram of Residuals for Final Linear Model")
 
-ggplot(average_cases_reduced, aes(sample = .resid)) + 
+ggplot(average_cases.full.lm, aes(sample = .resid)) + 
   stat_qq() +
   geom_qq_line(aes(color = "red")) + 
   labs(x = "Theoretical Quantiles", y =  "Model Residual Quantiles") + 
@@ -220,7 +197,7 @@ ggplot(average_cases_reduced, aes(sample = .resid)) +
 Our data has multiple extreme outlying values, however, only two have a relatively high leverage and only three have a Cooks' Distance above our threshold of three times the mean of all distances. Thus, of our sample of 158 observations only three are extreme and/or influential. After dropping these values and re-running our model our test statistic did not change drastically. As a result we retained these values in our final model.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-cooksD <- cooks.distance(average_cases_reduced)
+cooksD <- cooks.distance(average_cases.full.lm)
 influential <- cooksD[(cooksD > (3 * mean(cooksD, na.rm = TRUE)))]
 as_tibble(influential) %>% 
   rename("Cooks' Distances Above Threshold" = "value") %>% 

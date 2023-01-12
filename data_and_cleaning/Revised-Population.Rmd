@@ -32,12 +32,17 @@ df <- df %>%
     average_cases = average_cases / Population,
     average_deaths = average_deaths / Population,
     average_vaccinations_administered = average_vaccinations_administered /
-      Population
+      Population, 
+    estimate_health_insurance_coverage = estimate_health_insurance_coverage / Population
   )
 ```
 
 
 ```{r}
+# filtering out health insurance above 100%
+df <- df %>% 
+  filter(estimate_health_insurance_coverage <= 1) 
+
 average_death.full.lm <-
   lm(
     average_deaths ~ estimate_percent_essential_workers +
