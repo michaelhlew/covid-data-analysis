@@ -145,7 +145,7 @@ Our baseline model explains about 30% of the variance in average cases. In our a
 $$
 \begin{aligned}
 \widehat{Average \ Cases_i} =  
-\beta_0 + \beta_2(Percent \ Essential \ Workers_i) + \beta_2(Number \ of \ Individuals \ with \ Health \ Insurance_i) \\ 
+\beta_0 + \beta_1(Percent \ Essential \ Workers_i) + \beta_2(Number \ of \ Individuals \ with \ Health \ Insurance_i) \\ 
 + \beta_3(Average \ Vaccinations \ Administered_i) + 
 \beta_4(Mean \ Earnings_1) \\ + 
 \beta_5(Number \ of \ Individuals \ Commuting \ to \ Work_i)
